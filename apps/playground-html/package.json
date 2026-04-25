@@ -1,0 +1,16 @@
+{
+  "name": "@demo/playground-html",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "純 HTML 測試頁，模擬「把 dist 直接複製到任意專案」的使用流程。",
+  "scripts": {
+    "sync": "node scripts/sync-dist.mjs",
+    "dev": "npm run sync && vite",
+    "build": "npm run sync && vite build",
+    "preview": "vite preview --port 4174"
+  },
+  "devDependencies": {
+    "vite": "^8.0.10"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@demo/ui-elements",
+  "version": "0.0.1",
+  "description": "Reusable Vue-powered Web Components.",
+  "type": "module",
+  "main": "./dist/ui-elements.umd.cjs",
+  "module": "./dist/ui-elements.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/ui-elements.js",
+      "require": "./dist/ui-elements.umd.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "vue-tsc --noEmit && vite build",
+    "dev": "vite build --watch"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.6",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10",
+    "vite-plugin-dts": "^4.5.4",
+    "vue": "^3.5.33",
+    "vue-tsc": "^3.2.7"
+  }
+}

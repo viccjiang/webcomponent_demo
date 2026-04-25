@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/ui-elements" },
+    { "path": "./apps/playground" }
+  ]
+}

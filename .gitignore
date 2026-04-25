@@ -1,0 +1,19 @@
+node_modules
+dist
+dist-ssr
+*.local
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+.cache
+coverage
+*.tsbuildinfo
+
+# Claude Code 相關
+.claude/
+CLAUDE.md
+
+# 內部文件
+docs/

@@ -1,0 +1,21 @@
+{
+  "name": "web-components-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build:ui": "npm run build -w @demo/ui-elements",
+    "build:playground": "npm run build -w @demo/playground",
+    "build:html": "npm run build -w @demo/playground-html",
+    "build": "npm run build:ui && npm run build:playground && npm run build:html",
+    "dev:playground": "npm run dev -w @demo/playground",
+    "dev:html": "npm run build:ui && npm run dev -w @demo/playground-html",
+    "dev": "npm run build:ui && npm run dev:playground",
+    "preview": "npm run preview -w @demo/playground",
+    "preview:html": "npm run preview -w @demo/playground-html"
+  }
+}

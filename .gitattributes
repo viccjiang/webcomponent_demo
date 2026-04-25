@@ -1,0 +1,25 @@
+# 強制所有文字檔在 repo 內使用 LF，避免跨平台換行字元差異。
+# 工作目錄上 Windows 仍可顯示 CRLF（編輯器設定），但 commit 進 git 一律是 LF。
+
+* text=auto eol=lf
+
+# 二進位檔明確標記，避免 Git 嘗試做換行轉換。
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tgz binary
+
+# Windows 專屬腳本維持 CRLF，否則 cmd / batch 會解析錯誤
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf

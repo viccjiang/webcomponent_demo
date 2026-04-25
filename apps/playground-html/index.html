@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; frame-ancestors 'none';"
+    />
+    <title>UI Elements - Pure HTML Test</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        color: #1f2937;
+      }
+      .card {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-top: 1.25rem;
+      }
+      .card h2 {
+        margin-top: 0;
+        font-size: 1.1rem;
+      }
+      code {
+        background: #eef2ff;
+        padding: 0.05em 0.35em;
+        border-radius: 4px;
+      }
+      .row {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+      }
+      input[type='text'] {
+        padding: 0.35rem 0.5rem;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>UI Elements — Pure HTML Test</h1>
+      <p>
+        本頁不使用任何前端框架，只用原生
+        <code>&lt;script&gt;</code> 載入
+        <code>vendor/ui-elements/ui-elements.umd.cjs</code>。
+      </p>
+      <p>
+        模擬情境：拿到 <code>dist/</code> 資料夾後，直接放進專案，搭配 CDN
+        提供的 vue runtime，即可使用 Web Component。
+      </p>
+    </header>
+
+    <section class="card">
+      <h2>1. 基本使用</h2>
+      <my-button id="btn1" label="Hello from HTML"></my-button>
+      <my-button id="btn2" variant="secondary">slot 內容</my-button>
+      <my-button id="btn3" disabled>disabled</my-button>
+    </section>
+
+    <section class="card">
+      <h2>2. 動態改 attribute</h2>
+      <div class="row">
+        <input id="labelInput" type="text" value="Hello from HTML" />
+        <button id="toggleVariant" type="button">切換 variant</button>
+        <button id="toggleDisabled" type="button">切換 disabled</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Events</h2>
+      <p>
+        已觸發 <strong id="count">0</strong> 次
+        <code>click-me</code> 事件。
+      </p>
+      <p>最後一次 detail：<code id="lastDetail">(尚未觸發)</code></p>
+    </section>
+
+    <section class="card">
+      <h2>4. 載入順序</h2>
+      <ol>
+        <li>從 unpkg CDN 載入 <code>vue.global.prod.js</code> → <code>window.Vue</code></li>
+        <li>載入 <code>./vendor/ui-elements/ui-elements.umd.cjs</code> → <code>window.UiElements</code></li>
+        <li>呼叫 <code>UiElements.register()</code> → 註冊 <code>&lt;my-button&gt;</code></li>
+      </ol>
+    </section>
+
+    <!-- Step 1: vue runtime（peer dep，使用方自備）
+         - 版本鎖定到 3.5.13，避免 unpkg 解析至非預期版本
+         - integrity 為 sha384，瀏覽器會比對下載內容雜湊
+         - crossorigin=anonymous 是 SRI 必要搭配
+         - 升級 vue 時必須同時更新版本與 hash（重新計算：
+             curl -sL https://unpkg.com/vue@<ver>/dist/vue.global.prod.js \
+               | openssl dgst -sha384 -binary | openssl base64 -A） -->
+    <script
+      src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"
+      integrity="sha384-W/1Fp/LgAYO/oTn9Gs+PbeWuMuq1eQCnUMPCeg8POmMYchhzxctjEqtbiCIxDOON"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Step 2: 套件 UMD bundle（vendor/ 內容由 sync-dist.mjs 從 packages/ui-elements/dist 複製） -->
+    <script src="./vendor/ui-elements/ui-elements.umd.cjs"></script>
+
+    <!-- Step 3: 註冊 Custom Element 並接互動 -->
+    <script>
+      // UMD 將套件掛在 window.UiElements
+      UiElements.register();
+
+      // 互動：改 label
+      const btn1 = document.getElementById('btn1');
+      document.getElementById('labelInput').addEventListener('input', (e) => {
+        btn1.setAttribute('label', e.target.value);
+      });
+
+      // 互動：切換 variant
+      document.getElementById('toggleVariant').addEventListener('click', () => {
+        const cur = btn1.getAttribute('variant') || 'primary';
+        btn1.setAttribute('variant', cur === 'primary' ? 'secondary' : 'primary');
+      });
+
+      // 互動：切換 disabled
+      document.getElementById('toggleDisabled').addEventListener('click', () => {
+        if (btn1.hasAttribute('disabled')) {
+          btn1.removeAttribute('disabled');
+        } else {
+          btn1.setAttribute('disabled', '');
+        }
+      });
+
+      // 事件監聽
+      const countEl = document.getElementById('count');
+      const lastDetailEl = document.getElementById('lastDetail');
+      let count = 0;
+      document.querySelectorAll('my-button').forEach((el) => {
+        el.addEventListener('click-me', (e) => {
+          count += 1;
+          countEl.textContent = String(count);
+          lastDetailEl.textContent = JSON.stringify(e.detail);
+          // 純 demo 頁，console.log 非生產用途；正式專案應移除或加環境判斷
+          if (location.hostname === 'localhost') {
+            console.log('[playground-html] click-me', e.detail);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
